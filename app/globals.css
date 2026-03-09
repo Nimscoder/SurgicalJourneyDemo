@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fdf4e7 0%, #f7f7fb 45%, #e9f2ff 100%);
+  color: #17212b;
+}
+
+.paper-panel {
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(14px);
+}
+
+.scroll-clean {
+  scrollbar-width: thin;
+}
+
+.scroll-clean::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-clean::-webkit-scrollbar-thumb {
+  background: rgba(120, 140, 160, 0.4);
+  border-radius: 999px;
+}
