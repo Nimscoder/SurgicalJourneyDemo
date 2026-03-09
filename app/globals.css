@@ -6,15 +6,29 @@
   color-scheme: light;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   min-height: 100vh;
   background: linear-gradient(135deg, #fdf4e7 0%, #f7f7fb 45%, #e9f2ff 100%);
   color: #17212b;
+  font-feature-settings: "liga" 1, "calt" 1, "tnum" 1;
 }
 
 .paper-panel {
   background: rgba(255, 255, 255, 0.86);
   backdrop-filter: blur(14px);
+}
+
+.glass-soft {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(249, 250, 255, 0.78));
+  backdrop-filter: blur(14px);
+}
+
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
 .scroll-clean {
@@ -28,4 +42,12 @@ body {
 .scroll-clean::-webkit-scrollbar-thumb {
   background: rgba(120, 140, 160, 0.4);
   border-radius: 999px;
+}
+
+.message-in {
+  border-top-left-radius: 0.45rem;
+}
+
+.message-out {
+  border-top-right-radius: 0.45rem;
 }

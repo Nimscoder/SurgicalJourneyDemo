@@ -26,20 +26,21 @@ export function PresenterPanel({
   const program = getProgram(session.programId);
 
   return (
-    <aside className="paper-panel h-full rounded-2xl border border-white/50 p-4 shadow-md">
-      <h3 className="text-sm font-bold uppercase tracking-wide text-slate-600">Presenter Controls</h3>
+    <aside className="glass-soft h-full rounded-2xl border border-white/50 p-4 shadow-md">
+      <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-slate-600">Presenter Controls</h3>
+      <p className="mt-1 text-xs text-slate-500">Use these controls to drive the live demo flow.</p>
 
       <div className="mt-4 space-y-4 text-xs">
-        <div>
-          <p className="mb-2 font-semibold text-slate-500">Switch Program</p>
+        <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3">
+          <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Switch Program</p>
           <div className="grid grid-cols-1 gap-2">
             {programOrder.map((id) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => onSwitchProgram(id)}
-                className={`rounded-lg px-2 py-1.5 text-left ${
-                  session.programId === id ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"
+                className={`rounded-lg px-2.5 py-2 text-left text-xs transition-colors ${
+                  session.programId === id ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
                 {programTemplates[id].displayName}
@@ -48,15 +49,15 @@ export function PresenterPanel({
           </div>
         </div>
 
-        <div>
-          <p className="mb-2 font-semibold text-slate-500">Jump To</p>
+        <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3">
+          <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Jump To</p>
           <div className="grid grid-cols-2 gap-2">
             {jumpPoints.map((point) => (
               <button
                 key={point.label}
                 type="button"
                 onClick={() => onJump(point.day)}
-                className="rounded-lg bg-slate-100 px-2 py-1.5 text-slate-700 hover:bg-slate-200"
+                className="rounded-lg bg-slate-100 px-2 py-1.5 text-slate-700 transition-colors hover:bg-slate-200"
               >
                 {point.label}
               </button>
@@ -64,41 +65,61 @@ export function PresenterPanel({
           </div>
         </div>
 
-        <div>
-          <p className="mb-2 font-semibold text-slate-500">Actions</p>
+        <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3">
+          <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Actions</p>
           <div className="grid gap-2">
-            <button type="button" onClick={onTriggerNormal} className="rounded-lg bg-emerald-100 px-2 py-1.5 text-emerald-800">
+            <button
+              type="button"
+              onClick={onTriggerNormal}
+              className="rounded-lg bg-emerald-100 px-2 py-1.5 text-emerald-800 transition-colors hover:bg-emerald-200"
+            >
               Trigger Normal Response
             </button>
-            <button type="button" onClick={onTriggerRedFlag} className="rounded-lg bg-rose-100 px-2 py-1.5 text-rose-800">
+            <button
+              type="button"
+              onClick={onTriggerRedFlag}
+              className="rounded-lg bg-rose-100 px-2 py-1.5 text-rose-800 transition-colors hover:bg-rose-200"
+            >
               Trigger Red-Flag Response
             </button>
-            <button type="button" onClick={onLogCallback} className="rounded-lg bg-amber-100 px-2 py-1.5 text-amber-800">
+            <button
+              type="button"
+              onClick={onLogCallback}
+              className="rounded-lg bg-amber-100 px-2 py-1.5 text-amber-800 transition-colors hover:bg-amber-200"
+            >
               Log Doctor Callback
             </button>
-            <button type="button" onClick={onResolve} className="rounded-lg bg-sky-100 px-2 py-1.5 text-sky-800">
+            <button
+              type="button"
+              onClick={onResolve}
+              className="rounded-lg bg-sky-100 px-2 py-1.5 text-sky-800 transition-colors hover:bg-sky-200"
+            >
               Resolve Escalation
             </button>
-            <button type="button" onClick={onReset} className="rounded-lg bg-slate-200 px-2 py-1.5 text-slate-800">
+            <button
+              type="button"
+              onClick={onReset}
+              className="rounded-lg bg-slate-200 px-2 py-1.5 text-slate-800 transition-colors hover:bg-slate-300"
+            >
               Reset Demo
             </button>
           </div>
         </div>
 
-        <div>
-          <p className="mb-2 font-semibold text-slate-500">Event Log</p>
+        <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3">
+          <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Event Log</p>
           <div className="scroll-clean max-h-56 space-y-2 overflow-y-auto rounded-xl border border-slate-200 bg-white p-2">
             {session.events.slice(0, 14).map((entry) => (
               <div key={entry.id} className="rounded-md border border-slate-100 bg-slate-50 p-2">
-                <p className="font-medium text-slate-700">{entry.type}</p>
-                <p className="text-slate-600">{entry.detail}</p>
+                <p className="font-mono text-[10px] uppercase text-slate-500">{entry.type}</p>
+                <p className="mt-1 text-slate-700">{entry.detail}</p>
               </div>
             ))}
             {session.events.length === 0 && <p className="text-slate-500">No events yet.</p>}
           </div>
         </div>
 
-        <p className="rounded-lg bg-slate-100 p-2 text-slate-600">
+        <p className="rounded-lg border border-slate-200 bg-slate-100 p-2 text-slate-600">
           Active: {program.milestones.find((m) => m.id === session.activeMilestoneId)?.label}
         </p>
       </div>

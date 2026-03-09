@@ -16,20 +16,20 @@ export function MilestoneSheet({ session, milestoneId, onClose }: MilestoneSheet
   if (!milestone) return null;
 
   return (
-    <div className="fixed inset-0 z-40 bg-slate-900/30 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-40 bg-slate-900/30 p-4 backdrop-blur-[2px]" onClick={onClose}>
       <div
-        className="mx-auto mt-12 w-full max-w-md rounded-2xl bg-white p-5 shadow-xl"
+        className="mx-auto mt-12 w-full max-w-md animate-fade-in-up rounded-2xl bg-white p-5 shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500">Milestone Detail</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Milestone Detail</p>
             <h3 className="text-lg font-semibold text-slate-900">{milestone.title}</h3>
           </div>
-          <button onClick={onClose} className="text-sm text-slate-500">Close</button>
+          <button onClick={onClose} className="text-sm text-slate-500 transition-colors hover:text-slate-700">Close</button>
         </div>
 
-        <div className="space-y-3 text-sm text-slate-700">
+        <div className="space-y-3 text-sm leading-relaxed text-slate-700">
           <p><strong>Questions asked:</strong> {milestone.question}</p>
           <p><strong>Selected response:</strong> {state?.selectedReplyLabel ?? "Not answered"}</p>
           <p><strong>Status:</strong> {state?.status ?? "upcoming"}</p>
