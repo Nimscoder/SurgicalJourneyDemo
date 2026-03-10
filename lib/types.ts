@@ -101,6 +101,13 @@ export type DemoSession = {
   messages: ChatMessage[];
   events: DemoEvent[];
   escalation?: EscalationState;
+  presenterLocked: boolean;
+  pendingPatientReply?: {
+    milestoneId: string;
+    replyId: string;
+    replyLabel: string;
+    comment?: string;
+  };
   completed: boolean;
 };
 

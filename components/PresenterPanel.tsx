@@ -11,6 +11,7 @@ type PresenterPanelProps = {
   onLogCallback: () => void;
   onResolve: () => void;
   onReset: () => void;
+  onTogglePresenterLock: (locked: boolean) => void;
 };
 
 export function PresenterPanel({
@@ -22,8 +23,11 @@ export function PresenterPanel({
   onLogCallback,
   onResolve,
   onReset,
+  onTogglePresenterLock,
 }: PresenterPanelProps) {
   const program = getProgram(session.programId);
+  const escalationOpen = Boolean(session.escalation && session.escalation.status !== "resolved");
+  const callbackLogged = session.escalation?.status === "callback_logged";
 
   return (
     <aside className="glass-soft h-full rounded-2xl border border-white/50 p-4 shadow-md">
@@ -31,6 +35,27 @@ export function PresenterPanel({
       <p className="mt-1 text-xs text-slate-500">Use these controls to drive the live demo flow.</p>
 
       <div className="mt-4 space-y-4 text-xs">
+        <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3">
+          <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Demo Flow</p>
+          <button
+            type="button"
+            onClick={() => onTogglePresenterLock(!session.presenterLocked)}
+            className={`w-full rounded-lg px-2.5 py-2 text-left text-xs transition-colors ${
+              session.presenterLocked
+                ? "bg-slate-900 text-white"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            }`}
+          >
+            {session.presenterLocked ? "Presenter Lock: ON" : "Presenter Lock: OFF"}
+          </button>
+          {session.pendingPatientReply && (
+            <p className="mt-2 text-[11px] text-slate-600">
+              Pending patient input: {session.pendingPatientReply.replyLabel}
+              {session.pendingPatientReply.comment ? ` — ${session.pendingPatientReply.comment}` : ""}
+            </p>
+          )}
+        </div>
+
         <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3">
           <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Switch Program</p>
           <div className="grid grid-cols-1 gap-2">
@@ -67,6 +92,11 @@ export function PresenterPanel({
 
         <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3">
           <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Actions</p>
+          {session.escalation && (
+            <p className="mb-2 text-[11px] text-slate-500">
+              Escalation status: <span className="font-semibold text-slate-700">{session.escalation.status}</span>
+            </p>
+          )}
           <div className="grid gap-2">
             <button
               type="button"
@@ -85,14 +115,16 @@ export function PresenterPanel({
             <button
               type="button"
               onClick={onLogCallback}
-              className="rounded-lg bg-amber-100 px-2 py-1.5 text-amber-800 transition-colors hover:bg-amber-200"
+              disabled={!escalationOpen || callbackLogged}
+              className="rounded-lg bg-amber-100 px-2 py-1.5 text-amber-800 transition-colors hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Log Doctor Callback
+              {callbackLogged ? "Callback Logged" : "Log Doctor Callback"}
             </button>
             <button
               type="button"
               onClick={onResolve}
-              className="rounded-lg bg-sky-100 px-2 py-1.5 text-sky-800 transition-colors hover:bg-sky-200"
+              disabled={!escalationOpen}
+              className="rounded-lg bg-sky-100 px-2 py-1.5 text-sky-800 transition-colors hover:bg-sky-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Resolve Escalation
             </button>
@@ -111,6 +143,10 @@ export function PresenterPanel({
           <div className="scroll-clean max-h-56 space-y-2 overflow-y-auto rounded-xl border border-slate-200 bg-white p-2">
             {session.events.slice(0, 14).map((entry) => (
               <div key={entry.id} className="rounded-md border border-slate-100 bg-slate-50 p-2">
+                <p className="mb-1 font-mono text-[10px] uppercase text-slate-500">
+                  {entry.detail.match(/(Day\\s+\\d+|Week\\s+\\d+)/i)?.[1] ?? "Current check-in"} ·{" "}
+                  {new Date(entry.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </p>
                 <p className="font-mono text-[10px] uppercase text-slate-500">{entry.type}</p>
                 <p className="mt-1 text-slate-700">{entry.detail}</p>
               </div>

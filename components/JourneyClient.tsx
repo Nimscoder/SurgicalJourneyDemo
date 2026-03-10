@@ -53,7 +53,10 @@ export function JourneyClient() {
               )}
 
               <ProgressTimeline session={session} onSelectMilestone={setMilestoneSheet} />
-              <WhatsAppChat session={session} onSelectReply={actions.selectReply} />
+              <WhatsAppChat
+                session={session}
+                onSelectReply={actions.submitReplyWithComment}
+              />
             </div>
           </div>
         </section>
@@ -69,6 +72,7 @@ export function JourneyClient() {
               onLogCallback={actions.logCallback}
               onResolve={actions.resolveEscalation}
               onReset={actions.reset}
+              onTogglePresenterLock={actions.setPresenterLock}
             />
           </div>
         </section>
@@ -102,6 +106,7 @@ export function JourneyClient() {
               onLogCallback={actions.logCallback}
               onResolve={actions.resolveEscalation}
               onReset={actions.reset}
+              onTogglePresenterLock={actions.setPresenterLock}
             />
           </div>
         </div>

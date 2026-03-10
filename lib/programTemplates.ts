@@ -29,16 +29,16 @@ export const samplePatients: Record<string, SamplePatient> = {
 
 export const escalationMessages = {
   opened: [
-    "Thank you for letting us know.",
-    "Our care team will review this and arrange a doctor callback.",
+    "Thank you for letting us know. We understand this can feel worrying.",
+    "Our care team will review this and arrange a doctor callback as needed.",
   ],
   callbackLogged: [
     "A doctor callback has been completed.",
-    "We will continue to support the next steps in your recovery journey.",
+    "We'll continue to support your next recovery steps clearly and closely.",
   ],
   resolved: [
     "This concern has been reviewed and documented.",
-    "We will continue with your recovery check-ins.",
+    "We'll continue with your recovery check-ins and keep monitoring your progress.",
   ],
 };
 

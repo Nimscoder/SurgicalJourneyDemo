@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  addPatientComment,
   createSession,
   forceNormal,
   forceRedFlag,
@@ -9,6 +10,7 @@ import {
   logCallback,
   resolveEscalation,
   selectReply,
+  setPresenterLock,
   switchProgram,
 } from "@/lib/demoEngine";
 import {
@@ -59,6 +61,18 @@ export const useDemoSession = () => {
       selectReply: (reply: QuickReply) => {
         if (!session) return;
         commit(selectReply(session, reply));
+      },
+      submitReplyWithComment: (reply: QuickReply, comment: string) => {
+        if (!session) return;
+        commit(selectReply(session, reply, "patient", comment));
+      },
+      addPatientComment: (comment: string) => {
+        if (!session) return;
+        commit(addPatientComment(session, comment));
+      },
+      setPresenterLock: (locked: boolean) => {
+        if (!session) return;
+        commit(setPresenterLock(session, locked));
       },
       jumpToDay: (day: number) => {
         if (!session) return;

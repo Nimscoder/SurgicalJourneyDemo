@@ -1,10 +1,9 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./lib/**/*.{ts,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -35,12 +34,9 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "soft-grid":
-          "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)",
+        "soft-grid": "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)",
       },
     },
   },
   plugins: [],
 };
-
-export default config;
