@@ -10,6 +10,8 @@ type WhatsAppChatProps = {
 export function WhatsAppChat({ session, onSelectReply }: WhatsAppChatProps) {
   const program = getProgram(session.programId);
   const activeMilestone = program.milestones.find((m) => m.id === session.activeMilestoneId);
+  const activeMilestoneIndex = program.milestones.findIndex((m) => m.id === session.activeMilestoneId);
+  const isFinalMilestone = activeMilestoneIndex === program.milestones.length - 1;
   const milestoneLabelById = new Map(program.milestones.map((m) => [m.id, m.label] as const));
   const [comment, setComment] = useState("");
   const threadRef = useRef<HTMLDivElement>(null);
@@ -69,43 +71,76 @@ export function WhatsAppChat({ session, onSelectReply }: WhatsAppChatProps) {
       <div className="rounded-b-2xl border-t border-slate-200/60 bg-white p-3">
         {activeMilestone ? (
           <>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
-              <label className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                Optional Detail
-              </label>
-              <p className="mt-1 text-[11px] text-slate-500">
-                Add context if needed, then tap one quick reply below. The selected reply and detail are sent together.
-              </p>
-              <div className="mt-1">
-                <input
-                  value={comment}
-                  onChange={(event) => setComment(event.target.value)}
-                  placeholder="Type a concern or context..."
-                  className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-slate-300"
-                />
+            {isFinalMilestone ? (
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
+                <label className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                  Final Feedback Survey
+                </label>
+                <p className="mt-1 text-[11px] text-slate-500">
+                  How likely are you to recommend this recovery support journey? (0-10)
+                </p>
+                <div className="mt-2 grid grid-cols-6 gap-1">
+                  {Array.from({ length: 11 }).map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => {
+                        const targetReply =
+                          i >= 9
+                            ? activeMilestone.quickReplies[0]
+                            : i >= 7
+                              ? activeMilestone.quickReplies[1] ?? activeMilestone.quickReplies[0]
+                              : activeMilestone.quickReplies.find((r) => r.type === "red_flag") ?? activeMilestone.quickReplies[2] ?? activeMilestone.quickReplies[0];
+                        onSelectReply(targetReply, `Final rating: ${i}/10`);
+                      }}
+                      className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+                    >
+                      {i}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
+                  <label className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                    Optional Detail
+                  </label>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    Add context if needed, then tap one quick reply below. The selected reply and detail are sent together.
+                  </p>
+                  <div className="mt-1">
+                    <input
+                      value={comment}
+                      onChange={(event) => setComment(event.target.value)}
+                      placeholder="Type a concern or context..."
+                      className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-slate-300"
+                    />
+                  </div>
+                </div>
 
-            <p className="mb-2 mt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Quick Replies</p>
-            <div className="flex flex-wrap gap-2">
-              {activeMilestone.quickReplies.map((reply) => (
-                <button
-                  key={reply.id}
-                  type="button"
-                  onClick={() => {
-                    onSelectReply(reply, comment);
-                    setComment("");
-                  }}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-150 active:scale-[0.98] ${
-                    reply.type === "red_flag"
-                      ? "bg-rose-100 text-rose-700 hover:bg-rose-200"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
-                >
-                  {reply.label}
-                </button>
-              ))}
-            </div>
+                <p className="mb-2 mt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Quick Replies</p>
+                <div className="flex flex-wrap gap-2">
+                  {activeMilestone.quickReplies.map((reply) => (
+                    <button
+                      key={reply.id}
+                      type="button"
+                      onClick={() => {
+                        onSelectReply(reply, comment);
+                        setComment("");
+                      }}
+                      className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-150 active:scale-[0.98] ${
+                        reply.type === "red_flag"
+                          ? "bg-rose-100 text-rose-700 hover:bg-rose-200"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      }`}
+                    >
+                      {reply.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </>
         ) : (
           <p className="text-sm text-slate-500">Journey complete.</p>

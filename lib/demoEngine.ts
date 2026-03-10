@@ -82,7 +82,8 @@ const seedMilestoneMessages = (program: ProgramTemplate, milestoneId: string): C
   const milestone = program.milestones.find((m) => m.id === milestoneId);
   if (!milestone) return [];
 
-  const messages = milestone.openingMessages.map((content) => systemMessage(content, milestone.id));
+  // Keep opening concise to avoid repetitive sounding check-ins.
+  const messages = milestone.openingMessages.slice(0, 1).map((content) => systemMessage(content, milestone.id));
   messages.push(systemMessage(milestone.question, milestone.id));
   return messages;
 };
@@ -219,7 +220,6 @@ const activateNextMilestone = (session: DemoSession): DemoSession => {
     }),
     messages: [
       ...session.messages,
-      systemMessage(`Next check-in: ${nextMilestone.label} (${nextMilestone.title}).`, nextMilestone.id),
       ...seedMilestoneMessages(program, nextMilestone.id),
     ],
     events: [
@@ -243,6 +243,7 @@ export const selectReply = (
   const combinedPatientText = comment ? `${quickReply.label} — ${comment}` : quickReply.label;
 
   if (source === "patient" && session.presenterLocked) {
+    const pendingDetail = comment ? `${quickReply.label} — ${comment}` : quickReply.label;
     return {
       ...session,
       pendingPatientReply: {
@@ -262,7 +263,7 @@ export const selectReply = (
           : milestone,
       ),
       messages: [...session.messages, patientMessage(combinedPatientText, activeMilestone.id)],
-      events: [event("reply_selected", `Patient selected (awaiting presenter action): ${quickReply.label}`), ...session.events],
+      events: [event("reply_selected", `Patient selected: ${pendingDetail}`), ...session.events],
     };
   }
 
@@ -300,7 +301,10 @@ export const selectReply = (
     ),
     messages: nextMessages,
     events: [
-      event("reply_selected", `${source === "presenter" ? "Presenter triggered" : "Patient selected"}: ${quickReply.label}`),
+      event(
+        "reply_selected",
+        `${source === "presenter" ? "Presenter triggered" : "Patient selected"}: ${comment ? `${quickReply.label} — ${comment}` : quickReply.label}`,
+      ),
       ...followUps.map((message) => event("message_sent", message)),
       ...session.events,
     ],
